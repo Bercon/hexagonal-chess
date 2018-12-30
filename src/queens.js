@@ -1,8 +1,10 @@
-const N = parseInt(process.argv[2] || '3');
+const N = parseInt(process.argv[2] || '4') - 1;
 
-console.log('Hexagonal Chess: 2N-1 Queens for N =', N);
+console.log('Hexagonal Chess: 2N-1 Queens for N =', N + 1);
+console.time("Time");
 
 const hexes = [];
+let largestFound = [];
 
 for (let x = -N; x <= N; x++) {
   let ys = x < 0 ? N : N - x;
@@ -15,13 +17,11 @@ for (let x = -N; x <= N; x++) {
 function filterHexes(hexes, queen) {
   return hexes.filter(function(hex) {
     return !(hex[0] === queen[0] || hex[1] === queen[1] || hex[2] === queen[2])
-      && !(Math.abs(hex[0]-queen[0]) === Math.abs(hex[1]-queen[1]))
-      && !(Math.abs(hex[1]-queen[1]) === Math.abs(hex[2]-queen[2]))
-      && !(Math.abs(hex[2]-queen[2]) === Math.abs(hex[0]-queen[0]))
+      && !(Math.abs(hex[0] - queen[0]) === Math.abs(hex[1] - queen[1]))
+      && !(Math.abs(hex[1] - queen[1]) === Math.abs(hex[2] - queen[2]))
+      && !(Math.abs(hex[2] - queen[2]) === Math.abs(hex[0] - queen[0]))
   });
 }
-
-let largestFound = [];
 
 function maxQueens(freeHexes, queens) {
   for (let i = 0; i < freeHexes.length; i++) {
@@ -40,12 +40,14 @@ function maxQueens(freeHexes, queens) {
 
 maxQueens(hexes, []);
 
-console.log('Largest found:', largestFound);
-
+console.timeEnd("Time");
+console.log('Largest found:\n', largestFound);
+console.log('Queens:', largestFound.length);
+console.log('Goal:', (N + 1) * 2 - 1);
 
 function alternate(even, odd, count) {
   const buffer = [];
-  for (let x = 0; x < count ; x++) {
+  for (let x = 0; x < count; x++) {
     if (x % 2 == 0)
       Array.prototype.push.apply(buffer, even.split(''));
     else
@@ -66,7 +68,7 @@ function createBoard(width, height) {
   return board;
 }
 
-const board = createBoard((N+1) * 2 - 1, (N+1) * 2);
+const board = createBoard((N + 1) * 2 - 1, (N + 1) * 2);
 
 //printBoard(5,5);
 
@@ -80,10 +82,10 @@ function writeBoard(board, offsetX, offsetY, str) {
       board[offsetY][offsetX + i] = arr[i];
 }
 
-function printHex(board, hex, queen=false) {
+function printHex(board, hex, queen = false) {
   var col = hex[0] + N;
   var row = N % 2 === 0 ? hex[2] + (hex[0] - (hex[0] & 1)) / 2 + N
-      : hex[2] + (hex[0] + (hex[0] & 1)) / 2 + N;
+    : hex[2] + (hex[0] + (hex[0] & 1)) / 2 + N;
   var offsetX = 2 + col * 7;
   var offsetY = 1 + row * 4 + (col % 2) * 2;
   if (queen) {
